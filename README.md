@@ -1,9 +1,12 @@
 # POE-Discord-Bot
+- how to use : 
+- run npm install
+- add your bot token and channel ID into .env file
 
 ## POE-Discord-BOT(build with Node.js ) About auto catch Garena server divine price
 
 ## 目前功能
--   每2分鐘自動抓神聖價格並轉為0.幾混沌
+-   每5分鐘自動抓神聖價格並轉為0.幾混沌
 
 ## TODO
 -   查詢小通貨
