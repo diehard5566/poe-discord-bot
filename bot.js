@@ -1,7 +1,7 @@
 const { 
     Client,
     GatewayIntentBits,
-    EmbedBuilder 
+    EmbedBuilder, 
 } = require('discord.js')
 require('dotenv/config')
 const { divine } = require('./controller/currencyExchange');
@@ -20,11 +20,11 @@ client.on('ready', () => {
     console.log('Ready to start');
 
     // send msg every x milliseconds
-    const channel = client.channels.cache.find(channel => channel.id === process.env.CHANNEL_ID) 
+    const channel = client.channels.cache.find(channel => channel.id === process.env.CHANNEL_ID)
 
     setInterval(() => {
         channel.send('!d')
-    }, 120000);
+    }, 300000);
 });
 
 client.on('messageCreate', async (msg) => {
@@ -40,29 +40,33 @@ client.on('messageCreate', async (msg) => {
                 case 'd':
                     const exchange = await divine(searchJsonReady);
 
+                    // const exchange = [950,100,950,950,950,930,921,920,920,'nb3aQvH0']
+
                     const testEmbed2 = new EmbedBuilder()
                         .setDescription('目前D：C價格，取官網前10筆')
-                        .setTitle('Divine')
+                        .setTitle('神聖價格(可點)')
+                        .setURL(`https://web.poe.garena.tw/trade/exchange/卡蘭德/${exchange[9]}`)
                         .addFields(
                             { name: '第 1 ~ 10 筆', value:  exchange.toString() + 'c' },
                             { name: '\u200B', value: '\u200B' },
                             { name: '換算成c:', value: '取第二筆為基準作換算，小數點無條件捨去', inline: true },
-                            { name: '0.1D = ', value: Math.trunc(exchange[1] * 0.1).toString() + 'c' },
-                            { name: '0.2D = ', value: Math.trunc(exchange[1] * 0.2).toString() + 'c' },
-                            { name: '0.3D = ', value: Math.trunc(exchange[1] * 0.3).toString() + 'c' },
-                            { name: '0.4D = ', value: Math.trunc(exchange[1] * 0.4).toString() + 'c' },
-                            { name: '0.5D = ', value: Math.trunc(exchange[1] * 0.5).toString() + 'c' },
-                            { name: '0.6D = ', value: Math.trunc(exchange[1] * 0.6).toString() + 'c' },
-                            { name: '0.7D = ', value: Math.trunc(exchange[1] * 0.7).toString() + 'c' },
-                            { name: '0.8D = ', value: Math.trunc(exchange[1] * 0.8).toString() + 'c' },
-                            { name: '0.9D = ', value: Math.trunc(exchange[1] * 0.9).toString() + 'c' },
+                            { name: '0.1D = ', value: Math.trunc(exchange[0][1] * 0.1).toString() + 'c' },
+                            { name: '0.2D = ', value: Math.trunc(exchange[0][1] * 0.2).toString() + 'c' },
+                            { name: '0.3D = ', value: Math.trunc(exchange[0][1] * 0.3).toString() + 'c' },
+                            { name: '0.4D = ', value: Math.trunc(exchange[0][1] * 0.4).toString() + 'c' },
+                            { name: '0.5D = ', value: Math.trunc(exchange[0][1] * 0.5).toString() + 'c' },
+                            { name: '0.6D = ', value: Math.trunc(exchange[0][1] * 0.6).toString() + 'c' },
+                            { name: '0.7D = ', value: Math.trunc(exchange[0][1] * 0.7).toString() + 'c' },
+                            { name: '0.8D = ', value: Math.trunc(exchange[0][1] * 0.8).toString() + 'c' },
+                            { name: '0.9D = ', value: Math.trunc(exchange[0][1] * 0.9).toString() + 'c' },
                         );
 
 
                     msg.channel.send({ embeds: [testEmbed2] });
                     break;
-                case ('n'):
-                    msg.channel.send('測試回應');
+                case ('b'):
+
+                    await msg.channel.send('Test message')
                     break;
             }
         }

@@ -30,6 +30,8 @@ const divine = async (query) => {
 
     const obj = data.result;
 
+    const searchURL = data.id;
+
     const top3Value = [];
 
     for (let i = 0; i < 10; i++) {
@@ -39,7 +41,7 @@ const divine = async (query) => {
 
     const finalDivinePrice = top3Value.flat();
 
-    return finalDivinePrice;
+    return [finalDivinePrice, searchURL];
 }
 
 module.exports = {
