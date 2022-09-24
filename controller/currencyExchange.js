@@ -34,7 +34,7 @@ const divine = async (query) => {
 
     const top3Value = [];
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
         const D = Object.values(obj)[i].listing.offers.filter(el => el.exchange.amount === 1).map(el => el.item.amount);
         top3Value.push(D);
     }
