@@ -24,7 +24,7 @@ client.on('ready', () => {
 
     setInterval(() => {
         channel.send('!d')
-    }, 300000);
+    }, 210000);
 });
 
 client.on('messageCreate', async (msg) => {
