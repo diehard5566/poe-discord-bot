@@ -1,0 +1,9 @@
+{
+    "exchange": {
+        "status": {
+            "option": "onlineleague"
+        },
+        "have": ["divine"],
+        "want": ["chaos"]
+    }
+}
