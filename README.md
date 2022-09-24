@@ -7,7 +7,7 @@
 
 ## 目前功能
 -   每5分鐘自動抓神聖價格並轉為0.幾混沌
-- ![alt 文字](https://imgur.com/oz1Py06 "bot preview")
+- ![bot preview](https://i.imgur.com/oz1Py06.png "bot preview")
 
 ## TODO
 -   查詢小通貨
