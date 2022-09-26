@@ -15,7 +15,7 @@
                 {
                     "exchange": {
                         "currency": "divine",
-                        "amount": 5,
+                        "amount": 1,
                         "whisper": "{0} 神聖石"
                     },
                     "item": {

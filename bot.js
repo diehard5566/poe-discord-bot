@@ -19,6 +19,7 @@ client.on('ready', async() => {
 
     // send msg every x milliseconds
     const channel = client.channels.cache.find(channel => channel.id === process.env.CHANNEL_ID);
+    const channel2 = client.channels.cache.find(channel2 => channel2.id === process.env.PAYED_CHANNEL_ID)
 
     setInterval( async() => {
         const finalEmbed = await getEmbedFromExchange();
@@ -29,6 +30,16 @@ client.on('ready', async() => {
 
         channel.send({ embeds: [finalEmbed] });
     }, 210000);
+
+    setInterval( async() => {
+        const finalEmbed = await getEmbedFromExchange();
+
+        console.log('🚀 ------------------------------------------------------------------🚀');
+        console.log('🚀 ~ file: bot.js ~ for vps log', 'channel2 is fine now');
+        console.log('🚀 ------------------------------------------------------------------🚀');
+
+        channel2.send({ embeds: [finalEmbed] }); 
+    }, 600000);
 });
 
 client.on('messageCreate', async (msg) => {
@@ -42,10 +53,11 @@ client.on('messageCreate', async (msg) => {
             //功能實作
             switch (cmd[0]) {
                 case 'd':
-                    msg.channel.send('Test message');
+                    const finalEmbed = await getEmbedFromExchange();
+                    msg.channel.send({ embeds: [finalEmbed] });
                     break;
-                case ('b'):
-                    msg.channel.send('Test message2');
+                case 'b':
+                    msg.channel.send('test msg');
                     break;
             }
         }
