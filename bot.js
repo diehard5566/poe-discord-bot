@@ -18,6 +18,7 @@ client.on('ready', async() => {
     console.log('Ready to start');
 
     // send msg every x milliseconds
+    // 可以任意增減
     const channel = client.channels.cache.find(channel => channel.id === process.env.CHANNEL_ID);
     const channel2 = client.channels.cache.find(channel2 => channel2.id === process.env.PAYED_CHANNEL_ID)
 
@@ -31,6 +32,7 @@ client.on('ready', async() => {
         channel.send({ embeds: [finalEmbed] });
     }, 210000);
 
+    // 底下需要刪除，否則沒有加入PAYED_CHANNEL_ID會報錯
     setInterval( async() => {
         const finalEmbed = await getEmbedFromExchange();
 
@@ -40,6 +42,7 @@ client.on('ready', async() => {
 
         channel2.send({ embeds: [finalEmbed] }); 
     }, 600000);
+    // 刪到這裡
 });
 
 client.on('messageCreate', async (msg) => {
