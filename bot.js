@@ -1,10 +1,20 @@
+const cron = require('node-cron');
 const { 
     Client,
     GatewayIntentBits,
 } = require('discord.js')
 require('dotenv/config')
 const { getEmbedFromExchange } = require('./src/embed')
+const { 
+    chromeQuery,
+    jewellersQuery,
+    altQuery,
+} = require('./src/currencySearchQuery');
+const {
+    hourlyAlertByCurrencyQuery,
+} = require('./controller/currencyNotification');
 
+let userAlertArray = ['385605689017630721'];
 
 const client = new Client({
     intents: [
@@ -14,6 +24,25 @@ const client = new Client({
     ]
 });
 
+client.on('interactionCreate', (interaction) => {
+    if (!interaction.isChatInputCommand()) return;
+
+    const user = interaction.user.id
+
+    if (interaction.commandName === '開') {
+        interaction.reply(`<@${user}> 已開啟通知`);
+
+        if (!userAlertArray.every(user)) {
+            userAlertArray.push(user);
+        }
+    }
+
+    if (interaction.commandName === '關') {
+        interaction.reply(`<@${user}> 已關閉通知`);
+        userAlertArray = userAlertArray.filter(existingId => existingId !== user);
+    }
+});
+
 client.on('ready', async() => {
     console.log('Ready to start');
 
@@ -21,6 +50,7 @@ client.on('ready', async() => {
     // 可以任意增減
     const channel = client.channels.cache.find(channel => channel.id === process.env.CHANNEL_ID);
     const channel2 = client.channels.cache.find(channel2 => channel2.id === process.env.PAYED_CHANNEL_ID)
+    const testChannel = client.channels.cache.find(test => test.id === '1023144699709636638')
 
     setInterval( async() => {
         const finalEmbed = await getEmbedFromExchange();
@@ -42,7 +72,25 @@ client.on('ready', async() => {
 
         channel2.send({ embeds: [finalEmbed] }); 
     }, 600000);
-    // 刪到這裡
+    刪到這裡
+
+
+    // 設定每天午夜00:00執行一次
+    cron.schedule('0 0 * * *', async () => {
+        await hourlyAlertByCurrencyQuery(chromeQuery,testChannel, userAlertArray);
+
+        setTimeout(() => {
+        }, 30000);
+
+        await hourlyAlertByCurrencyQuery(jewellersQuery,testChannel, userAlertArray);
+
+        setTimeout(() => {
+        }, 30000);
+
+        await hourlyAlertByCurrencyQuery(altQuery,testChannel, userAlertArray);
+    }, {
+        timezone: 'Asia/Taipei'
+    });
 });
 
 client.on('messageCreate', async (msg) => {
