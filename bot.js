@@ -50,7 +50,7 @@ client.on('ready', async() => {
     // 可以任意增減
     const channel = client.channels.cache.find(channel => channel.id === process.env.CHANNEL_ID);
     const channel2 = client.channels.cache.find(channel2 => channel2.id === process.env.PAYED_CHANNEL_ID)
-    const testChannel = client.channels.cache.find(test => test.id === '1023144699709636638')
+    const testChannel = client.channels.cache.find(test => test.id === '585051684607098893')
 
     setInterval( async() => {
         const finalEmbed = await getEmbedFromExchange();
