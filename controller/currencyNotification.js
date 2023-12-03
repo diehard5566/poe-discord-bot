@@ -73,7 +73,9 @@ async function hourlyAlertByCurrencyQuery(query, channel, userAlertArray) {
                         sentAlertMsg = `${ userNeedAlert }工匠超過3000啦~快買 點這裡${currencyPriceByType.URL}`;
                     }
 
-                    channel.send(sentAlertMsg);
+                    if (currentHour >= 8 && currentHour <= 23) {
+                        channel.send(sentAlertMsg);
+                    }
 
                     historyAlerts.set('currentHour', currentHour);
 
