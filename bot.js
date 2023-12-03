@@ -72,7 +72,7 @@ client.on('ready', async() => {
 
         channel2.send({ embeds: [finalEmbed] }); 
     }, 600000);
-    刪到這裡
+    // 刪到這裡
 
 
     // 設定每天午夜00:00執行一次
