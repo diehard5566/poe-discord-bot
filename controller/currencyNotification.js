@@ -53,6 +53,8 @@ async function hourlyAlertByCurrencyQuery(query, channel, userAlertArray) {
         try {
             const currentHour = moment().hour();
 
+            console.log('當前時間：', currentHour);
+
             const checkHasAlert = historyAlerts.get('currentHour'); 
 
             const currencyPriceByType = await notificationWithCurrencyQuery(query);
@@ -85,7 +87,7 @@ async function hourlyAlertByCurrencyQuery(query, channel, userAlertArray) {
             // 檢查有沒有通知過要買入
             const hasSendAlerted = [...historyAlerts.values()][0]
             
-            sellAlert(hasSendAlerted, currencyPriceByType, channel);
+            sellAlert(hasSendAlerted, currencyPriceByType, channel, currencyType);
         } catch (error) {
             console.log(error);
             throw new Error(error);
@@ -93,7 +95,7 @@ async function hourlyAlertByCurrencyQuery(query, channel, userAlertArray) {
     }, 3600000);
 }
 
-function sellAlert(hasSendAlerted, currencyPriceByType, channel) {
+function sellAlert(hasSendAlerted, currencyPriceByType, channel, currencyType) {
     if (currencyType === '改造') {
         if (hasSendAlerted && currencyPriceByType.currencyPrice[1] <= 2500) {
             // 賣出通知

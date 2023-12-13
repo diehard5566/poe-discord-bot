@@ -30,14 +30,18 @@ client.on('interactionCreate', (interaction) => {
     const user = interaction.user.id
 
     if (interaction.commandName === '開') {
+        console.log(`${user} 使用開啟通知功能`);
+
         interaction.reply(`<@${user}> 已開啟通知`);
 
-        if (!userAlertArray.every(user)) {
+        if (!userAlertArray.includes(user)) {
             userAlertArray.push(user);
         }
     }
 
     if (interaction.commandName === '關') {
+        console.log(`${user} 使用關閉通知功能`);
+
         interaction.reply(`<@${user}> 已關閉通知`);
         userAlertArray = userAlertArray.filter(existingId => existingId !== user);
     }
@@ -53,41 +57,57 @@ client.on('ready', async() => {
     const testChannel = client.channels.cache.find(test => test.id === '585051684607098893')
 
     setInterval( async() => {
-        const finalEmbed = await getEmbedFromExchange();
-
-        console.log('🚀 ------------------------------------------------------------------🚀');
-        console.log('🚀 ~ file: bot.js ~ for vps log', 'bot is fine now');
-        console.log('🚀 ------------------------------------------------------------------🚀');
-
-        channel.send({ embeds: [finalEmbed] });
+        try {
+            const finalEmbed = await getEmbedFromExchange();
+    
+            console.log('🚀 ------------------------------------------------------------------🚀');
+            console.log('🚀 ~ file: bot.js ~ for vps log', 'bot is fine now');
+            console.log('🚀 ------------------------------------------------------------------🚀');
+    
+            channel.send({ embeds: [finalEmbed] });
+        } catch (error) {
+            console.log(new Date());
+            throw new error;
+        }
     }, 210000);
 
     // 底下需要刪除，否則沒有加入PAYED_CHANNEL_ID會報錯
     setInterval( async() => {
-        const finalEmbed = await getEmbedFromExchange();
-
-        console.log('🚀 ------------------------------------------------------------------🚀');
-        console.log('🚀 ~ file: bot.js ~ for vps log', 'channel2 is fine now');
-        console.log('🚀 ------------------------------------------------------------------🚀');
-
-        channel2.send({ embeds: [finalEmbed] }); 
+        try {
+            const finalEmbed = await getEmbedFromExchange();
+    
+            console.log('🚀 ------------------------------------------------------------------🚀');
+            console.log('🚀 ~ file: bot.js ~ for vps log', 'channel2 is fine now');
+            console.log('🚀 ------------------------------------------------------------------🚀');
+    
+            channel2.send({ embeds: [finalEmbed] }); 
+        } catch (error) {
+            console.log(new Date());
+            throw new error;
+        }
     }, 600000);
     // 刪到這裡
 
 
     // 設定每天午夜00:00執行一次
     cron.schedule('0 0 * * *', async () => {
-        await hourlyAlertByCurrencyQuery(chromeQuery,testChannel, userAlertArray);
+        try {
+            await hourlyAlertByCurrencyQuery(chromeQuery,testChannel, userAlertArray);
+    
+            setTimeout(() => {
+            }, 30000);
+    
+            await hourlyAlertByCurrencyQuery(jewellersQuery,testChannel, userAlertArray);
+    
+            setTimeout(() => {
+            }, 30000);
+    
+            await hourlyAlertByCurrencyQuery(altQuery,testChannel, userAlertArray);
+        } catch (error) {
+            console.log(new Date());
+            throw new error;
+        }
 
-        setTimeout(() => {
-        }, 30000);
-
-        await hourlyAlertByCurrencyQuery(jewellersQuery,testChannel, userAlertArray);
-
-        setTimeout(() => {
-        }, 30000);
-
-        await hourlyAlertByCurrencyQuery(altQuery,testChannel, userAlertArray);
     }, {
         timezone: 'Asia/Taipei'
     });
