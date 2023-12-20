@@ -54,7 +54,7 @@ client.on('ready', async() => {
     // 可以任意增減
     const channel = client.channels.cache.find(channel => channel.id === process.env.CHANNEL_ID);
     const channel2 = client.channels.cache.find(channel2 => channel2.id === process.env.PAYED_CHANNEL_ID)
-    const testChannel = client.channels.cache.find(test => test.id === '585051684607098893')
+    const testChannel = client.channels.cache.find(test => test.id === '1180885277741420654')
 
     setInterval( async() => {
         try {
@@ -67,7 +67,7 @@ client.on('ready', async() => {
             channel.send({ embeds: [finalEmbed] });
         } catch (error) {
             console.log(new Date());
-            throw new error;
+            console.error('An error occurred:', error);
         }
     }, 210000);
 
@@ -83,33 +83,28 @@ client.on('ready', async() => {
             channel2.send({ embeds: [finalEmbed] }); 
         } catch (error) {
             console.log(new Date());
-            throw new error;
+            console.error('An error occurred:', error);
         }
     }, 600000);
     // 刪到這裡
 
+    // 買賣通知
+    const historyAlerts = new Map();
 
-    // 設定每天午夜00:00執行一次
-    cron.schedule('0 0 * * *', async () => {
-        try {
-            await hourlyAlertByCurrencyQuery(chromeQuery,testChannel, userAlertArray);
-    
-            setTimeout(() => {
-            }, 30000);
-    
-            await hourlyAlertByCurrencyQuery(jewellersQuery,testChannel, userAlertArray);
-    
-            setTimeout(() => {
-            }, 30000);
-    
-            await hourlyAlertByCurrencyQuery(altQuery,testChannel, userAlertArray);
-        } catch (error) {
-            console.log(new Date());
-            throw new error;
-        }
+    // 每小時執行一次的函數
+    setInterval(async () => {
+        console.log('hourly alert started at:', new Date());
+        await hourlyAlertByCurrencyQuery(jewellersQuery,testChannel, userAlertArray, historyAlerts);
+        await hourlyAlertByCurrencyQuery(altQuery,testChannel, userAlertArray, historyAlerts);
+        await hourlyAlertByCurrencyQuery(chromeQuery, testChannel, userAlertArray, historyAlerts);
+    }, 3600000);
 
+    // 每天午夜重置歷史記錄
+    cron.schedule('0 0 * * *', () => {
+        historyAlerts.clear();
     }, {
-        timezone: 'Asia/Taipei'
+        scheduled: true,
+        timezone: "Asia/Taipei"
     });
 });
 
@@ -133,7 +128,7 @@ client.on('messageCreate', async (msg) => {
             }
         }
     } catch (err) {
-        console.log('OnMessageError', err);
+        console.error('An error occurred:', err);
     }
 }); 
 

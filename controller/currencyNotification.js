@@ -43,59 +43,47 @@ async function notificationWithCurrencyQuery(query) {
 
 }
 
-async function hourlyAlertByCurrencyQuery(query, channel, userAlertArray) {
+async function hourlyAlertByCurrencyQuery(query, channel, userAlertArray, historyAlerts) {
     const userNeedAlert = getFormattedIdsString(userAlertArray);
     const currencyType = ENUM_CURRENCY_TYPE[query.exchange.want[0]];
-    const historyAlerts = new Map();
+    const currentHour = moment().hour();
+    const historyAlertKey = `${currentHour}-${currencyType}-alerted`;
 
-    // 每小時重複一次
-    setInterval(async () => {
-        try {
-            const currentHour = moment().hour();
+    try {
+        const currencyPriceByType = await notificationWithCurrencyQuery(query);
 
-            console.log('當前時間：', currentHour);
+        const checkCurrencyPrice = currencyPriceByType.currencyPrice.length > 0;
 
-            const checkHasAlert = historyAlerts.get('currentHour'); 
-
-            const currencyPriceByType = await notificationWithCurrencyQuery(query);
-
-            // 檢查當前小時是否已經通知過要買
-            if (checkHasAlert === undefined || checkHasAlert != currentHour) {
-
-                const checkCurrencyPrice = currencyPriceByType.currencyPrice.length > 0;
-
-                if (checkCurrencyPrice) {
-                    let sentAlertMsg;
-
-                    if (currencyType === '改造') {
-                        sentAlertMsg = `${ userNeedAlert }改造超過2000啦~快買 點這裡${currencyPriceByType.URL}`;
-                    } else if (currencyType === '幻色') {
-                        sentAlertMsg = `${ userNeedAlert }幻色超過4000啦~快買 點這裡${currencyPriceByType.URL}`;
-                    } else if (currencyType === '工匠') {
-                        sentAlertMsg = `${ userNeedAlert }工匠超過3000啦~快買 點這裡${currencyPriceByType.URL}`;
-                    }
-
-                    if (currentHour >= 8 && currentHour <= 23) {
-                        channel.send(sentAlertMsg);
-                    }
-
-                    historyAlerts.set('currentHour', currentHour);
-
+        if (!historyAlerts.get(historyAlertKey)) {
+            if (checkCurrencyPrice) {
+                let sentAlertMsg;
+    
+                if (currencyType === '改造') {
+                    sentAlertMsg = `${ userNeedAlert }改造超過2000啦~快買 點這裡${currencyPriceByType.URL}`;
+                } else if (currencyType === '幻色') {
+                    sentAlertMsg = `${ userNeedAlert }幻色超過4000啦~快買 點這裡${currencyPriceByType.URL}`;
+                } else if (currencyType === '工匠') {
+                    sentAlertMsg = `${ userNeedAlert }工匠超過3000啦~快買 點這裡${currencyPriceByType.URL}`;
                 }
+    
+                if (currentHour >= 8 && currentHour <= 23) {
+                    channel.send(sentAlertMsg);
+                }
+    
+                historyAlerts.set(historyAlertKey, true);
             }
-            
-            // 檢查有沒有通知過要買入
-            const hasSendAlerted = [...historyAlerts.values()][0]
-            
-            sellAlert(hasSendAlerted, currencyPriceByType, channel, currencyType);
-        } catch (error) {
-            console.log(error);
-            throw new Error(error);
         }
-    }, 3600000);
+
+        // 檢查有沒有通知過要買入
+        const hasSendAlerted = historyAlerts.get(historyAlertKey);
+        
+        sellAlert(hasSendAlerted, currencyPriceByType, channel, currencyType, userNeedAlert);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
-function sellAlert(hasSendAlerted, currencyPriceByType, channel, currencyType) {
+function sellAlert(hasSendAlerted, currencyPriceByType, channel, currencyType, userNeedAlert) {
     if (currencyType === '改造') {
         if (hasSendAlerted && currencyPriceByType.currencyPrice[1] <= 2500) {
             // 賣出通知
