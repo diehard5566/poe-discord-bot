@@ -21,7 +21,7 @@ module.exports.getEmbedFromExchange = async function getEmbedFromExchange() {
         return new EmbedBuilder()
         .setDescription(`目前1D換C的價格，取官網前${finalDivinePrice.length}筆`)
         .setTitle('官網連結')
-        .setURL(`https://web.poe.garena.tw/trade/exchange/${leagueName}/${searchURL}`)
+        .setURL(`https://pathofexile.tw/trade/exchange/${leagueName}/${searchURL}`)
         .addFields(
                 { name: `第 1 ~ ${finalDivinePrice.length} 筆`, value: formatExchange },
                 { name: '換算成c:', value: '取第二筆為基準作換算，小數點無條件捨去' },

@@ -7,7 +7,7 @@ async function getLeagueNameFromGGC() {
             method: 'GET',
         };
 
-        const res = await fetch('https://web.poe.garena.tw/api/trade/data/leagues', requestOption);
+        const res = await fetch('https://pathofexile.tw/api/trade/data/leagues', requestOption);
         const data = await res.json();
 
         return data.result[0].id;
@@ -29,7 +29,7 @@ async function getURLFromGGC(searchJsonReady) {
             body: JSON.stringify(searchJsonReady),
         }
 
-        const res = await fetch(`http://web.poe.garena.tw/api/trade/exchange/${leagueName}`, requestOption)
+        const res = await fetch(`http://pathofexile.tw/api/trade/exchange/${leagueName}`, requestOption)
         const data = await res.json()
 
         return { data, leagueName }

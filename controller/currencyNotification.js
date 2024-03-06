@@ -33,7 +33,7 @@ async function notificationWithCurrencyQuery(query) {
         }
     }
 
-    const URL = `https://web.poe.garena.tw/trade/exchange/${leagueName}/${searchURL}`
+    const URL = `https://pathofexile.tw/trade/exchange/${leagueName}/${searchURL}`
 
 
     return {

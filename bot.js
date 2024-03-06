@@ -106,6 +106,37 @@ client.on('ready', async() => {
         scheduled: true,
         timezone: "Asia/Taipei"
     });
+
+
+    // TODO: 12/27 有空的話完成下面的修正
+    // function scheduleHourlyTasks() {
+    //     const now = new Date();
+    //     const nextHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 1, 0, 0, 0);
+    //     const delay = nextHour - now;
+    
+    //     setTimeout(() => {
+    //         hourlyAlertByCurrencyQuery(jewellersQuery, testChannel, userAlertArray, historyAlerts);
+    //         hourlyAlertByCurrencyQuery(altQuery, testChannel, userAlertArray, historyAlerts);
+    //         hourlyAlertByCurrencyQuery(chromeQuery, testChannel, userAlertArray, historyAlerts);
+    
+    //         setInterval(() => {
+    //             hourlyAlertByCurrencyQuery(jewellersQuery, testChannel, userAlertArray, historyAlerts);
+    //             hourlyAlertByCurrencyQuery(altQuery, testChannel, userAlertArray, historyAlerts);
+    //             hourlyAlertByCurrencyQuery(chromeQuery, testChannel, userAlertArray, historyAlerts);
+    //         }, 3600000); // 1小时
+    //     }, delay);
+    // }
+    
+    // // 初始化定时任务
+    // scheduleHourlyTasks();
+    
+    // // 每天午夜重置历史记录
+    // cron.schedule('0 0 * * *', () => {
+    //     historyAlerts.clear();
+    // }, {
+    //     scheduled: true,
+    //     timezone: "Asia/Taipei"
+    // });
 });
 
 client.on('messageCreate', async (msg) => {
