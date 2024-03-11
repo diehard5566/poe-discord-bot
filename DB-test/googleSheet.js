@@ -61,7 +61,7 @@ async function getItemPriceResponseToDiscordByItemName (search, socketNumber, sh
     const allTradeData = await getSheetData(process.env.GOOGLE_SHEET_ID, sheetName);
 
     const searchData = allTradeData.find(helmet => helmet[0] === search)
-    const resultSearchDataWithSocketNumber = searchData[Number(socketNumber) + 1] || '目前尚無資料或沒價' ;
+    const resultSearchDataWithSocketNumber = searchData[Number(socketNumber) + 2] || '目前尚無資料或沒價' ;
     return `目前 "${search}" / "${socketNumber} 洞"的市集價格為 ：${resultSearchDataWithSocketNumber}，掉落地點為： ${searchData[1]}，最後更新時間為： ${searchData[searchData.length - 1]}`
 
 }

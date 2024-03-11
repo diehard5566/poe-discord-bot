@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { getSheetData } = require('../DB-test/googleSheet');
-const { ENUM_HElMET_SHEET, MAP_HELMET_SHEET } = require('../src/LastEpoch-sheet-enum')
+const { ENUM_HElMET_SHEET, MAP_HELMET_SHEET, SOCKET_NUMBER } = require('../src/LastEpoch-sheet-enum')
 
 
 module.exports = {
@@ -19,10 +19,7 @@ module.exports = {
             option.setName('洞數')
                 .setDescription('輸入洞數')
                 .addChoices(
-                    {'name': '1', 'value': '1'},
-                    {'name': '2', 'value': '2'},
-                    {'name': '3', 'value': '3'},
-                    {'name': '4', 'value': '4'},
+                    ...SOCKET_NUMBER.socketNumber
                 )
                 .setRequired(true)
         ),

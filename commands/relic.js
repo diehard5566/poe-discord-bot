@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { getItemPriceResponseToDiscordByItemName } = require('../DB-test/googleSheet');
-const { ENUM_RELIC_SHEET } = require('../src/LastEpoch-sheet-enum')
+const { ENUM_RELIC_SHEET, SOCKET_NUMBER } = require('../src/LastEpoch-sheet-enum')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -44,10 +44,7 @@ module.exports = {
             option.setName('洞數')
                 .setDescription('輸入洞數')
                 .addChoices(
-                    {'name': '1', 'value': '1'},
-                    {'name': '2', 'value': '2'},
-                    {'name': '3', 'value': '3'},
-                    {'name': '4', 'value': '4'},
+                    ...SOCKET_NUMBER.socketNumber
                 )
                 .setRequired(true)
         ),
@@ -61,7 +58,7 @@ module.exports = {
 
             const finalResponseToDiscordResult = await getItemPriceResponseToDiscordByItemName(search, socketNumber, ENUM_RELIC_SHEET);
 
-            await interaction.editReply({ content: finalResponseToDiscordResult, ephemeral: true });
+            await interaction.editReply({ content: `遺器不包含抹滅系列 ${finalResponseToDiscordResult}`, ephemeral: true });
 
         } catch (error) {
             console.log(error);

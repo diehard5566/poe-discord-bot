@@ -56,9 +56,9 @@ client.on('ready', async() => {
 
     // send msg every x milliseconds
     // // 可以任意增減
-    // const channel = client.channels.cache.find(channel => channel.id === process.env.CHANNEL_ID);
-    // const channel2 = client.channels.cache.find(channel2 => channel2.id === process.env.PAYED_CHANNEL_ID)
-    const testChannel = client.channels.cache.find(test => test.id === '1180885277741420654')
+    const channel = client.channels.cache.find(channel => channel.id === process.env.CHANNEL_ID);
+    const channel2 = client.channels.cache.find(channel2 => channel2.id === process.env.PAYED_CHANNEL_ID)
+    // const testChannel = client.channels.cache.find(test => test.id === '1180885277741420654')
 
     setInterval( async() => {
         try {
