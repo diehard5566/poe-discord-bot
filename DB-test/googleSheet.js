@@ -45,7 +45,7 @@ async function updatesSheetData(docID, sheetID, helmetName, fieldIndex, newValue
         }
 
         // 修改行的數據
-        row._rawData[fieldIndex] = newValue;
+        row._rawData[fieldIndex + 2] = newValue;
         row._rawData[row._rawData.length - 1] = new Date().toLocaleString();
 
 
@@ -62,7 +62,7 @@ async function getItemPriceResponseToDiscordByItemName (search, socketNumber, sh
 
     const searchData = allTradeData.find(helmet => helmet[0] === search)
     const resultSearchDataWithSocketNumber = searchData[Number(socketNumber) + 2] || '目前尚無資料或沒價' ;
-    return `目前 "${search}" / "${socketNumber} 洞"的市集價格為 ：${resultSearchDataWithSocketNumber}，掉落地點為： ${searchData[1]}，最後更新時間為： ${searchData[searchData.length - 1]}`
+    return `目前 "${search}" - "${socketNumber} 洞" 的市集價格為 ：${resultSearchDataWithSocketNumber}，掉落地點為： ${searchData[1]}，最後更新時間為： ${searchData[searchData.length - 1]}`
 
 }
 

@@ -18,7 +18,7 @@ const {
     hourlyAlertByCurrencyQuery,
 } = require('./controller/currencyNotification');
 
-let userAlertArray = ['385605689017630721'];
+let userAlertArray = [];
 
 const client = new Client({
     intents: [
