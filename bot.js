@@ -1,7 +1,11 @@
 const cron = require('node-cron');
+const fs = require("node:fs");
+const path = require("node:path");
 const { 
     Client,
     GatewayIntentBits,
+    Collection,
+    Events,
 } = require('discord.js')
 require('dotenv/config')
 const { getEmbedFromExchange } = require('./src/embed')
@@ -24,36 +28,36 @@ const client = new Client({
     ]
 });
 
-client.on('interactionCreate', (interaction) => {
-    if (!interaction.isChatInputCommand()) return;
+// client.on('interactionCreate', (interaction) => {
+//     if (!interaction.isChatInputCommand()) return;
 
-    const user = interaction.user.id
+//     const user = interaction.user.id
 
-    if (interaction.commandName === '開') {
-        console.log(`${user} 使用開啟通知功能`);
+//     if (interaction.commandName === '開') {
+//         console.log(`${user} 使用開啟通知功能`);
 
-        interaction.reply(`<@${user}> 已開啟通知`);
+//         interaction.reply(`<@${user}> 已開啟通知`);
 
-        if (!userAlertArray.includes(user)) {
-            userAlertArray.push(user);
-        }
-    }
+//         if (!userAlertArray.includes(user)) {
+//             userAlertArray.push(user);
+//         }
+//     }
 
-    if (interaction.commandName === '關') {
-        console.log(`${user} 使用關閉通知功能`);
+//     if (interaction.commandName === '關') {
+//         console.log(`${user} 使用關閉通知功能`);
 
-        interaction.reply(`<@${user}> 已關閉通知`);
-        userAlertArray = userAlertArray.filter(existingId => existingId !== user);
-    }
-});
+//         interaction.reply(`<@${user}> 已關閉通知`);
+//         userAlertArray = userAlertArray.filter(existingId => existingId !== user);
+//     }
+// });
 
 client.on('ready', async() => {
     console.log('Ready to start');
 
     // send msg every x milliseconds
-    // 可以任意增減
-    const channel = client.channels.cache.find(channel => channel.id === process.env.CHANNEL_ID);
-    const channel2 = client.channels.cache.find(channel2 => channel2.id === process.env.PAYED_CHANNEL_ID)
+    // // 可以任意增減
+    // const channel = client.channels.cache.find(channel => channel.id === process.env.CHANNEL_ID);
+    // const channel2 = client.channels.cache.find(channel2 => channel2.id === process.env.PAYED_CHANNEL_ID)
     const testChannel = client.channels.cache.find(test => test.id === '1180885277741420654')
 
     setInterval( async() => {
@@ -162,5 +166,78 @@ client.on('messageCreate', async (msg) => {
         console.error('An error occurred:', err);
     }
 }); 
+
+// 指令
+client.commands = new Collection();
+
+const commands = [];
+
+// 讀取 commands 資料夾下的 js 檔案
+const commandsPath = path.join(__dirname, "commands");
+const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith(".js"));
+
+// 將指令加入 Collection
+for (const file of commandFiles) {
+	const filePath = path.join(commandsPath, file);
+	const command = require(filePath);
+
+	// 在 Collection 中以指令名稱作為 key，指令模組作為 value 加入
+	if ("data" in command && "execute" in command) {
+		client.commands.set(command.data.name, command);
+	} else {
+		console.log(`[警告] ${filePath} 中的指令缺少必要的 "data" 或 "execute" 屬性。`);
+	}
+
+	// 存進 commands array
+	commands.push(command.data.toJSON());
+}
+
+// 當收到互動事件時，檢查是否為指令，若是則執行該指令
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+
+	const command = interaction.client.commands.get(interaction.commandName);
+
+	if (!command) {
+		console.error(`找不到指令 ${interaction.commandName}。`);
+		return;
+	}
+
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+		if (interaction.replied || interaction.deferred) {
+			await interaction.followUp({
+				content: "執行指令時發生錯誤！",
+				ephemeral: true,
+			});
+		} else {
+			await interaction.reply({
+				content: "執行指令時發生錯誤！",
+				ephemeral: true,
+			});
+		}
+	}
+});
+
+// 註冊指令
+const registerCommands = async (client) => {
+	try {
+		if (client.application) {
+			console.log(`Started refreshing ${commands.length} application (/) commands.`);
+			const data = await client.application.commands.set(commands);
+			console.log(`Successfully reloaded ${data.size} application (/) commands.`);
+		}
+	} catch(e) {
+		console.error(e);
+	}
+}
+
+// 當 client 就緒時顯示訊息
+client.once(Events.ClientReady, async (client) => {
+	console.log(`已就緒！已登入帳號：${client.user.tag}`);
+	await registerCommands(client);
+});
 
 client.login(process.env.TOKEN);
