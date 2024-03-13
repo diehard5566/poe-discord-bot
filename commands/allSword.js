@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { getItemPriceResponseToDiscordByItemName } = require('../DB-test/googleSheet');
+const { getItemPriceResponseToDiscordByItemName, updatesSheetData } = require('../DB-test/googleSheet');
 const { ENUM_ALL_SWORD_SHEET, SOCKET_NUMBER } = require('../src/LastEpoch-sheet-enum')
 
 module.exports = {
